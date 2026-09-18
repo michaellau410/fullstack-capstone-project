@@ -19,7 +19,8 @@ const connectToDatabase = require("../models/db");
 const bcryptjs = require('bcryptjs'); //  Registration 
 const jwt = require('jsonwebtoken'); // woth bcrypt together for Login 
 
-// checl user input
+// check user input
+// here using "body" because we have req.body in mind and prepare for this
 const { body, validationResult } = require('express-validator');
 
 // log
@@ -126,6 +127,60 @@ router.post('/login', async (req, res) =>{
 
         return res.status(500).send({ error: 'Internal server error'});
     }
+});
+
+
+// update user profile endpoint
+// use "put" for update 
+router.put('/update', async (req, res) =>{
+
+
+    try{
+        const result = validationResult(req);
+        // Extracts the validation errors from a request and makes them available in a Result object. (spec)
+        // result is never be null
+        if(result.isEmpty()){
+            return res.status(400).json({errors: result.array()});
+        }
+    
+        if(!req.header.email){
+            return res.status(400).json({error: "Email not in request header"});
+        }
+    
+        const db = await connectToDatabase();
+        const collection = db.collection("users");
+        
+        const existingUser = await db.collection.findOne({email : req.header.email});
+    
+        if(existingUser){
+    
+            existingUser.updatedAt = new Date();
+            // update one accept (filter, value, option) 2-3 parameters
+            const updatedUser = await db.collection.updateOne(
+            
+                { email: req.header.email},
+                { $set: {updatedAt: existingUser.updatedAt}}
+            );
+    
+            const payload = {
+                user: {
+                    id: updatedUser._id.toString(),
+                },
+            };
+    
+            const authtoken = jwt.sign(payload, JWT_SECRET);
+    
+            return res.status(200).json({authtoken: authtoken});
+    
+        }
+        else {
+        
+            return res.status(500).json({error: 'self profile not found?!'});
+        }
+    }catch(e){
+        return res.status(500).send({error: 'Internal server error'} );
+    }
+
 });
 
 
