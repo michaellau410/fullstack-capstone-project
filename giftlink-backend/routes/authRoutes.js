@@ -140,6 +140,7 @@ router.put('/update', async (req, res) =>{
         // Extracts the validation errors from a request and makes them available in a Result object. (spec)
         // result is never be null
         if(result.isEmpty()){
+        // in common, people will use !errors.isEmpty() as validationResult returns an object which only contains errors or empty
             return res.status(400).json({errors: result.array()});
         }
     
@@ -152,31 +153,27 @@ router.put('/update', async (req, res) =>{
         
         const existingUser = await db.collection.findOne({email : req.header.email});
     
-        if(existingUser){
-    
-            existingUser.updatedAt = new Date();
-            // update one accept (filter, value, option) 2-3 parameters
-            const updatedUser = await db.collection.updateOne(
-            
-                { email: req.header.email},
-                { $set: {updatedAt: existingUser.updatedAt}}
-            );
-    
-            const payload = {
-                user: {
-                    id: updatedUser._id.toString(),
-                },
-            };
-    
-            const authtoken = jwt.sign(payload, JWT_SECRET);
-    
-            return res.status(200).json({authtoken: authtoken});
-    
-        }
-        else {
-        
+        if(!existingUser){        
             return res.status(500).json({error: 'self profile not found?!'});
         }
+
+        existingUser.updatedAt = new Date();
+        // update one accept (filter, value, option) 2-3 parameters
+        const updatedUser = await db.collection.updateOne(
+            { email: req.header.email },
+            { $set: {updatedAt: existingUser.updatedAt, firstName: req.body.name } }
+        );
+    
+        const payload = {
+            user: {
+                id: updatedUser._id.toString(),
+            },
+        };
+    
+        const authtoken = jwt.sign(payload, JWT_SECRET);
+    
+        return res.status(200).json({authtoken: authtoken});
+
     }catch(e){
         return res.status(500).send({error: 'Internal server error'} );
     }
