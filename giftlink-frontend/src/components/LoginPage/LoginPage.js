@@ -13,6 +13,8 @@ function LoginPage() {
 
     const [incorrect, setIncorrect] = useState('');
 
+    const [showError, setShowError] = useState('');
+
     const {setIsLoggedIn} = useAppContext(); // link to system's monitoring variable
 
     const bearerToken = sessionStorage.getItem('bearer-token'); // ?
@@ -61,7 +63,7 @@ function LoginPage() {
 
             if(fetchResult.authtoken){
                 sessionStorage.setItem('auth-token', fetchResult.authtoken);
-			    sessionStorage.setItem('name', firstName);
+			    sessionStorage.setItem('name', fetchResult.userName);
 			    sessionStorage.setItem('email', fetchResult.email);
 
                 setIsLoggedIn(true);
@@ -77,8 +79,8 @@ function LoginPage() {
             }
 
             // client side no logic to determine what kind of error, only receive from server
-            if (json.error) {
-			    setShowerr(json.error);
+            if (fetchResult.error) {
+			    setShowError(fetchResult.error);
 		    }
         
         }catch(e){
