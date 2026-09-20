@@ -13,7 +13,7 @@ function LoginPage() {
 
     const [incorrect, setIncorrect] = useState('');
 
-    const [showError, setShowError] = useState('');
+	const [showerr, setShowerr] = useState('');
 
     const {setIsLoggedIn} = useAppContext(); // link to system's monitoring variable
 
@@ -80,7 +80,7 @@ function LoginPage() {
 
             // client side no logic to determine what kind of error, only receive from server
             if (fetchResult.error) {
-			    setShowError(fetchResult.error);
+			    setShowerr(fetchResult.error);
 		    }
         
         }catch(e){
@@ -121,6 +121,7 @@ function LoginPage() {
                             />
 
 							{/*Step 2: Task 6*/}
+                            <div className="text-danger">{showerr}</div>
                             <span style={{color:'red',height:'.5cm',display:'block',fontStyle:'italic',fontSize:'12px'}}>{incorrect}</span>
                         </div>
                         <button className="btn btn-primary w-100 mb-3" onClick={handleLogin}>Login</button>
