@@ -11,8 +11,6 @@ const collectionName = 'gifts';
 // notice you have to load the array of gifts into the data object
 const data = JSON.parse(fs.readFileSync(filename, 'utf8')).docs;
 
-const natural = require('natural');
-
 // connect to database and insert data into the collection
 async function loadData() {
     const client = new MongoClient(url);
