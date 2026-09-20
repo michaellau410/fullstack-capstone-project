@@ -7,9 +7,6 @@ require('dotenv').config({ path: path.resolve(__dirname, '../util/import-mongo/.
 
 const MongoClient = require('mongodb').MongoClient;
 
-
-
-
 // MongoDB connection URL with authentication options
 let url = `${process.env.MONGO_URL}`;
 
@@ -25,15 +22,13 @@ async function connectToDatabase() {
 
     // Task 1: Connect to MongoDB
     await client.connect();
-    // {{insert code}}
 
     // Task 2: Connect to database giftDB and store in variable dbInstance
     dbInstance = client.db(dbName);
-    //{{insert code}}
 
     // Task 3: Return database instance
     return dbInstance;
-    // {{insert code}}
+
 }
 
 module.exports = connectToDatabase;
