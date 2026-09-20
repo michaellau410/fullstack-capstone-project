@@ -25,11 +25,11 @@ jobs:
 
       - name: Run Linter
         run: |
-          # Added --options to support modern ES6+ features
-          find ./giftlink-backend -name app.js -exec jshint --esversion:11 {} +
-          find ./giftlink-backend -name auth.js -exec jshint --esversion:11 {} +
-          find ./giftlink-backend -name giftRoutes.js -exec jshint --esversion:11 {} +
-          find ./giftlink-backend -name searchRoutes.js -exec jshint --esversion:11 {} +
+          # This command finds all JavaScript files recursively and runs JSHint on them
+          find ./giftlink-backend -name app.js -exec jshint {} +
+          find ./giftlink-backend -name auth.js -exec jshint {} +
+          find ./giftlink-backend -name giftRoutes.js -exec jshint {} +
+          find ./giftlink-backend -name searchRoutes.js -exec jshint {} +
           echo "Linted all the js files successfully"
 
   client_build:
